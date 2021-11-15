@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -32,8 +33,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var downloadManager: DownloadManager
 
     private lateinit var notificationManager: NotificationManager
-//    private lateinit var pendingIntent: PendingIntent
-//    private lateinit var action: NotificationCompat.Action
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,14 +55,17 @@ class MainActivity : AppCompatActivity() {
                 radioButton_glide.id -> {
                     download(URL_GLIDE)
                     downloadTitle = getString(R.string.glide_radioButton_text)
+                    custom_button.startDownload()
                 }
                 radioButton_udacity.id -> {
                     download(URL_LOAD_APP)
                     downloadTitle = getString(R.string.udacity_radioButton_text)
+                    custom_button.startDownload()
                 }
                 radioButton_retrofit.id -> {
                     download(URL_RETROFIT)
                     downloadTitle = getString(R.string.retrofit_radioButton_text)
+                    custom_button.startDownload()
                 }
                 -1 -> Toast.makeText(
                     this@MainActivity,
@@ -76,7 +78,6 @@ class MainActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            custom_button.defineButtonState(ButtonState.Clicked)
         }
     }
 
@@ -88,17 +89,17 @@ class MainActivity : AppCompatActivity() {
             if (intent?.action == DownloadManager.ACTION_DOWNLOAD_COMPLETE && downloadID == id) {
                 custom_button.downloadComplete()
 
-                val query = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
-
-                if (query.moveToFirst()) {
-                    downloadStatus =
-                        when (query.getInt(query.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
-                            DownloadManager.STATUS_SUCCESSFUL -> "Success"
-                            DownloadManager.STATUS_FAILED -> "Failed"
-                            else -> return
-                        }
+                val query = DownloadManager.Query()
+                val cursor: Cursor = downloadManager.query(query)
+                if (cursor.moveToFirst()) {
+                    val success =
+                        cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                    val isSuccess = success == DownloadManager.STATUS_SUCCESSFUL
+                    downloadStatus = if (isSuccess) "Success" else "Failed"
+                    downloadTitle =
+                        cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
+                    notificationManager.sendNotification(context!!, downloadTitle, downloadStatus)
                 }
-                notificationManager.sendNotification(context!!, downloadTitle, downloadStatus)
             }
         }
     }
@@ -133,7 +134,7 @@ class MainActivity : AppCompatActivity() {
             notificationChannel.enableLights(true)
             notificationChannel.enableVibration(true)
             notificationChannel.lightColor = getColor(R.color.colorSecondaryLight)
-            notificationChannel.description = "Your download is complete!"
+            notificationChannel.description = "Download complete"
 
             notificationManager = ContextCompat.getSystemService(
                 applicationContext, NotificationManager::class.java
@@ -150,5 +151,4 @@ class MainActivity : AppCompatActivity() {
 
         private const val CHANNEL_ID = "channelId"
     }
-
 }

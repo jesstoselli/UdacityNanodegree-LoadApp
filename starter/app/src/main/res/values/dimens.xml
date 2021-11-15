@@ -12,4 +12,5 @@
     <dimen name="middle_margin">20dp</dimen>
     <dimen name="large_margin">24dp</dimen>
     <dimen name="double_margin">32dp</dimen>
+    <dimen name="button_height">60dp</dimen>
 </resources>

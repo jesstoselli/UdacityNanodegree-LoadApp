@@ -22,16 +22,14 @@ class DetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
         setSupportActionBar(toolbar)
 
-        intent.getStringExtra("download").let {
-            textView_fileName.text = it
-        }
-        intent.getStringExtra("status").let {
-            textView_status.text = it
+        if (intent?.extras != null) {
+            textView_fileName.text = intent.getStringExtra("download")
+            textView_status.text = intent.getStringExtra("status")
         }
 
         button_ok.setOnClickListener {
-            val intent = Intent(this@DetailActivity, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            val intent = Intent(this, MainActivity::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
             finish()
         }
