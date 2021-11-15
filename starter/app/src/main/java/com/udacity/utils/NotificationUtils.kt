@@ -14,7 +14,6 @@ import com.udacity.R
 
 // Notification ID.
 private const val NOTIFICATION_ID = 0
-private const val REQUEST_CODE = 0
 
 fun NotificationManager.sendNotification(
     applicationContext: Context,
@@ -41,15 +40,6 @@ fun NotificationManager.sendNotification(
         applicationContext.getString(R.string.notification_button),
         detailPendingIntent
     )
-
-//    val detailPendingIntent: PendingIntent = PendingIntent.getBroadcast(
-//        applicationContext,
-//        REQUEST_CODE,
-//        detailIntent,
-//        PendingIntent.FLAG_UPDATE_CURRENT
-//    )
-
-//    val contentIntent = Intent(applicationContext, MainActivity::class.java)
 
     val contentIntent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

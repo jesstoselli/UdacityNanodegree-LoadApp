@@ -76,7 +76,6 @@ class LoadingButton @JvmOverloads constructor(
     private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Complete) { _, _, new ->
         when (new) {
             ButtonState.Downloading -> {
-//                buttonText = resources.getString(R.string.button_downloading)
                 valueAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
                     duration = 2500
                     repeatMode = ValueAnimator.RESTART
@@ -90,7 +89,6 @@ class LoadingButton @JvmOverloads constructor(
                 }
             }
             ButtonState.Complete -> {
-//                buttonText = resources.getString(R.string.button_download)
                 valueAnimator.end()
             }
         }
@@ -114,9 +112,7 @@ class LoadingButton @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // First you gotta color your canvas, in this case, the whole button frame
         canvas.drawColor(buttonOriginalColor)
-        // Then draw text in original state
         canvas.drawText(
             buttonText,
             width.toFloat() / 2,
@@ -171,6 +167,10 @@ class LoadingButton @JvmOverloads constructor(
         setMeasuredDimension(w, h)
     }
 
+    private fun defineButtonState(buttonState: ButtonState) {
+        this.buttonState = buttonState
+    }
+
     private fun stopAnimation() {
         defineButtonState(ButtonState.Complete)
         valueAnimator.cancel()
@@ -182,10 +182,6 @@ class LoadingButton @JvmOverloads constructor(
             right = 0f
             bottom = 0f
         }
-    }
-
-    private fun defineButtonState(buttonState: ButtonState) {
-        this.buttonState = buttonState
     }
 
     fun downloadComplete() {

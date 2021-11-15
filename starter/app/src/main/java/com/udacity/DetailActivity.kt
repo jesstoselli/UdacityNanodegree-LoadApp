@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.udacity.utils.cancelNotifications
-import kotlinx.android.synthetic.main.activity_detail.*
+import kotlinx.android.synthetic.main.activity_detail.toolbar
 import kotlinx.android.synthetic.main.content_detail.button_ok
 import kotlinx.android.synthetic.main.content_detail.textView_fileName
 import kotlinx.android.synthetic.main.content_detail.textView_status
@@ -29,7 +29,6 @@ class DetailActivity : AppCompatActivity() {
 
         button_ok.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
             finish()
         }
