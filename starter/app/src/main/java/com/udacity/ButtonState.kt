@@ -5,8 +5,4 @@ sealed class ButtonState {
     object Clicked : ButtonState()
     object Downloading : ButtonState()
     object Complete : ButtonState()
-
-    fun getTextId(): Int {
-        return getTextId()
-    }
 }
