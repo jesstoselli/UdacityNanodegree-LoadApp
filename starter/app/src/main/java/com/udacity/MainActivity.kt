@@ -15,7 +15,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.udacity.utils.cancelNotifications
 import com.udacity.utils.sendNotification
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.content_main.custom_button
@@ -88,18 +87,31 @@ class MainActivity : AppCompatActivity() {
 
             if (intent?.action == DownloadManager.ACTION_DOWNLOAD_COMPLETE && downloadID == id) {
                 custom_button.downloadComplete()
+                notificationManager.sendNotification(
+                    context!!,
+                    downloadTitle,
+                    downloadStatus
+                )
 
-                val query = DownloadManager.Query()
-                val cursor: Cursor = downloadManager.query(query)
-                if (cursor.moveToFirst()) {
-                    val success =
-                        cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-                    val isSuccess = success == DownloadManager.STATUS_SUCCESSFUL
-                    downloadStatus = if (isSuccess) "Success" else "Failed"
-                    downloadTitle =
-                        cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
-                    notificationManager.sendNotification(context!!, downloadTitle, downloadStatus)
-                }
+//                    val cursor: Cursor =
+//                        downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+//                    downloadTitle =
+//                        cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
+//                    if (cursor.moveToFirst()) {
+//                        downloadStatus =
+//                            if (cursor.getColumnIndex(DownloadManager.COLUMN_STATUS) == DownloadManager.STATUS_SUCCESSFUL) {
+//                                "Success"
+//                            } else {
+//                                "Failed"
+//                            }
+
+                //                    val success =
+                //                        cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                //                    val isSuccess = success == DownloadManager.STATUS_SUCCESSFUL
+                //                    downloadStatus = if (isSuccess) "Success" else "Failed"
+                //                    downloadTitle =
+                //                        cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
+
             }
         }
     }
@@ -118,7 +130,18 @@ class MainActivity : AppCompatActivity() {
         downloadID =
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
 
-        notificationManager.cancelNotifications()
+        val cursor: Cursor =
+            downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+        if (cursor.moveToFirst()) {
+            downloadTitle = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
+            downloadStatus =
+                if (cursor.getColumnIndex(DownloadManager.COLUMN_STATUS) == DownloadManager.STATUS_SUCCESSFUL) {
+                    "Success"
+                } else {
+                    "Failed"
+                }
+        }
+//        notificationManager.cancelNotifications()
     }
 
     private fun appCreateNotificationChannel() {

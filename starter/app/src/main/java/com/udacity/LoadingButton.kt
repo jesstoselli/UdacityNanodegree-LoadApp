@@ -12,7 +12,6 @@ import android.view.View
 import androidx.core.content.withStyledAttributes
 import kotlin.properties.Delegates
 
-
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
@@ -22,6 +21,8 @@ class LoadingButton @JvmOverloads constructor(
     private var textHeight = 0f
     private var textWidth = 0f
     private var textOffset = 0f
+    private val textSize: Float = resources.getDimension(R.dimen.standard_text_size)
+    private val circle = RectF(0f, 0f, textSize, textSize)
 
     private var circleDiameter = 0f
     private var circleMargin = 0f
@@ -73,8 +74,8 @@ class LoadingButton @JvmOverloads constructor(
 
     private var valueAnimator = ValueAnimator()
 
-    private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Complete) { _, _, new ->
-        when (new) {
+    private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Complete) { _, _, newState ->
+        when (newState) {
             ButtonState.Downloading -> {
                 valueAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
                     duration = 2500
@@ -83,7 +84,7 @@ class LoadingButton @JvmOverloads constructor(
 
                     addUpdateListener {
                         downloadProgress = animatedValue as Float * measuredWidth.toFloat()
-                        circleProgress = animatedValue as Float * 360F
+                        circleProgress = (widthSize.toFloat() / 365) * downloadProgress
                     }
                     start()
                 }
@@ -122,16 +123,6 @@ class LoadingButton @JvmOverloads constructor(
 
         if (buttonState == ButtonState.Downloading) {
             canvas.drawRect(0f, 0f, downloadProgress, heightSize.toFloat(), buttonDownloadingPaint)
-            canvas.drawArc(
-                widthSize - circleDiameter - circleMargin,
-                circleMargin,
-                widthSize - circleMargin,
-                circleMargin + circleDiameter,
-                0f,
-                circleProgress,
-                true,
-                circlePaint
-            )
 
             buttonText = resources.getString(R.string.button_downloading)
             canvas.drawText(
@@ -140,6 +131,16 @@ class LoadingButton @JvmOverloads constructor(
                 ((height / 2) - ((buttonTextPaint.descent() + buttonTextPaint.ascent()) / 2)),
                 buttonTextPaint
             )
+
+            textWidth = buttonTextPaint.measureText(buttonText)
+
+            canvas.save()
+            canvas.translate(
+                widthSize / 2 + textWidth / 2 + textSize / 2,
+                heightSize / 2 - textSize / 2
+            )
+            canvas.drawArc(circle, 0F, circleProgress * 0.365f, true, circlePaint)
+            canvas.restore()
         }
     }
 
@@ -158,8 +159,8 @@ class LoadingButton @JvmOverloads constructor(
         textWidth = buttonTextPaint.measureText(buttonText)
         textOffset = (textHeight / 2) - buttonTextPaint.descent()
 
-        circleDiameter = heightSize * 0.6f
-        circleMargin = heightSize * 0.15f
+        circleDiameter = heightSize * 0.5f
+        circleMargin = heightSize * 0.2f
 
         horizontalProgress.right = widthSize.toFloat()
         horizontalProgress.bottom = heightSize.toFloat()

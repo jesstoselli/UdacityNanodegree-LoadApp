@@ -24,8 +24,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/large_margin"
-        android:layout_marginEnd="@dimen/large_margin"
         android:layout_marginTop="@dimen/double_margin"
+        android:layout_marginEnd="@dimen/large_margin"
         android:text="@string/download_status"
         android:textColor="@color/colorSecondaryDark"
         android:textSize="@dimen/default_text_size"
@@ -50,12 +50,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginTop="@dimen/double_margin"
-        android:text="@string/glide_radioButton_text"
         android:textColor="@android:color/black"
         android:textSize="@dimen/standard_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView_fileNameLabel"
-        app:layout_constraintTop_toBottomOf="@id/textView_detailScreenTitle" />
+        app:layout_constraintTop_toBottomOf="@id/textView_detailScreenTitle"
+        tools:text="@string/glide_radioButton_text" />
 
     <TextView
         android:id="@+id/textView_statusLabel"
@@ -73,13 +73,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginTop="24dp"
-        android:text="@string/success"
         android:textColor="@android:color/black"
         android:textSize="@dimen/standard_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView_fileNameLabel"
-        app:layout_constraintTop_toBottomOf="@+id/textView_fileName" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_fileName"
+        tools:text="@string/success" />
 
     <Button
         android:id="@+id/button_ok"
